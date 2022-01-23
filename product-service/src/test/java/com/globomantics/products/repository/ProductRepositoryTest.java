@@ -1,65 +1,29 @@
 package com.globomantics.products.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import com.github.database.rider.core.api.connection.ConnectionHolder;
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.junit5.DBUnitExtension;
 import com.globomantics.products.model.Product;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
-@ExtendWith({DBUnitExtension.class, SpringExtension.class})
-@SpringBootTest
+@JdbcTest
+@Import(ProductRepositoryImpl.class)
 public class ProductRepositoryTest {
-
-  @TestConfiguration
-  public static class ProductRepositoryTestConfiguration {
-    @Bean
-    public DataSource dataSource() {
-
-      // Setup a data source for our tests
-      DriverManagerDataSource dataSource = new DriverManagerDataSource();
-      dataSource.setDriverClassName("org.h2.Driver");
-      dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
-      dataSource.setUsername("sa");
-      dataSource.setPassword("");
-
-      return dataSource;
-    }
-  }
-  @Autowired
-  private DataSource dataSource;
 
   @Autowired
   private ProductRepository repository;
 
-  public ConnectionHolder getConnectionHolder() {
-    // Return a function that retrieves a connection from our data source
-    return () -> dataSource.getConnection();
-  }
-
   @Test
-  @DataSet("products.yml")
   void testFindAll() {
     List<Product> products = repository.findAll();
     Assertions.assertEquals(2, products.size(), "We should have 2 products in our database");
   }
 
   @Test
-  @DataSet("products.yml")
   void testFindByIdSuccess() {
     // Find the product with ID 2
     Optional<Product> product = repository.findById(2);
@@ -76,7 +40,6 @@ public class ProductRepositoryTest {
   }
 
   @Test
-  @DataSet("products.yml")
   void testFindByIdNotFound() {
     // Find the product with ID 2
     Optional<Product> product = repository.findById(3);
@@ -86,7 +49,6 @@ public class ProductRepositoryTest {
   }
 
   @Test
-  @DataSet(value = "products.yml")
   void testSave() {
     // Create a new product and save it to the database
     Product product = Product.builder().name("Product 5").quantity(5).build();
@@ -106,7 +68,6 @@ public class ProductRepositoryTest {
   }
 
   @Test
-  @DataSet(value = "products.yml")
   void testUpdateSuccess() {
     // Update product 1's name, quantity, and version
     Product product = Product.builder().id(1).name("This is product 1").quantity(100).version(5).build();
@@ -124,7 +85,6 @@ public class ProductRepositoryTest {
   }
 
   @Test
-  @DataSet(value = "products.yml")
   void testUpdateFailure() {
     // Update product 1's name, quantity, and version
     Product product = Product.builder().id(3).name("This is product 3").quantity(100).version(5).build();
@@ -135,7 +95,6 @@ public class ProductRepositoryTest {
   }
 
   @Test
-  @DataSet("products.yml")
   void testDeleteSuccess() {
     boolean result = repository.delete(1);
     Assertions.assertTrue(result, "Delete should return true on success");
@@ -146,7 +105,6 @@ public class ProductRepositoryTest {
   }
 
   @Test
-  @DataSet("products.yml")
   void testDeleteFailure() {
     boolean result = repository.delete(3);
     Assertions.assertFalse(result, "Delete should return false because the deletion failed");

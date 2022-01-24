@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>product-service</module>
+        <module>review-service</module>
     </modules>
     <packaging>pom</packaging>
     <name>tdd-spring-junit5</name>
@@ -19,7 +20,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>2.6.2</spring-boot.version>
+        <spring-boot.version>2.6.3</spring-boot.version>
 <!--        <resource.delimiter>@</resource.delimiter>-->
 <!--        <maven.compiler.source>${java.version}</maven.compiler.source>-->
 <!--        <maven.compiler.target>${java.version}</maven.compiler.target>-->

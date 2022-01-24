@@ -4,11 +4,9 @@ import com.globomantics.reviews.model.Review;
 import com.globomantics.reviews.model.ReviewEntry;
 import com.globomantics.reviews.repository.ReviewRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -17,20 +15,24 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
-@SpringBootTest(classes = ReviewServiceImpl.class)
 class ReviewServiceTest {
   /**
    * The service that we want to test.
    */
-  @Autowired
   private ReviewService service;
 
   /**
    * A mock version of the ReviewRepository for use in our tests.
    */
-  @MockBean
   private ReviewRepository repository;
+
+  @BeforeEach
+  void setup() {
+    this.repository = mock(ReviewRepository.class);
+    this.service = new ReviewServiceImpl(repository);
+  }
 
   @Test
   @DisplayName("Test findById Success")
